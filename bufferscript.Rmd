@@ -25,11 +25,11 @@ library(rgdal)
 
 location <- choose.files()
 
-file.rename(location, "unzip.kml.zip")
+file.copy(location, "unzip.kml.zip", overwrite = TRUE)
 
 unzipped <- unzip("unzip.kml.zip")
 
-map <- st_read(unzip(unzipped))
+map <- st_read(unzipped)
 
 plot(map)
 
