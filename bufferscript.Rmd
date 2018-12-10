@@ -17,6 +17,7 @@ library(tidyverse)
 library(sf)
 library(sp)
 library(rgdal)
+library(mapview)
 ```
 
 ##Step 1:  Load in Google Earth KMZ and test plotting
@@ -31,7 +32,7 @@ unzipped <- unzip("unzip.kml.zip")
 
 map <- st_read(unzipped)
 
-plot(map)
+mapview(map)
 
 ```
 
