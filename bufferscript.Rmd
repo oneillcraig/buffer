@@ -1,0 +1,59 @@
+---
+title: "GoogleEarth Buffer Creation"
+author: "Craig"
+date: "December 6, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+##Libraries Used
+
+```{r}
+library(leaflet)
+library(tidyverse)
+library(sf)
+library(sp)
+library(rgdal)
+```
+
+##Step 1:  Load in Google Earth KMZ and test plotting
+
+```{r}
+
+location <- choose.files()
+
+file.rename(location, "unzip.kml.zip")
+
+unzipped <- unzip("unzip.kml.zip")
+
+map <- st_read(unzip(unzipped))
+
+plot(map)
+
+```
+
+##Create Buffer Distance Conversion
+The buffer distances required are listed in feet (usually) but our maps are WGS84 and use a lat/long system.  Need to transform feet to decimal degrees of long to create the buffer calculations.
+
+##Create the buffer
+```{r}
+buff <- st_buffer(map, dist=0.00068677)
+plot(buff$geometry, border='red', col=FALSE, reset=FALSE)
+plot(map$geometry, add=TRUE)
+
+```
+
+##Saving the buffer
+```{r}
+newbuffer <- cbind(map, buff)
+
+
+st_write(buff, 
+         dsn = choose.files(default="buffermap.kml", 
+                            caption = "Select file to save as, or create new file"),
+         delete_dsn = TRUE)
+```
+
