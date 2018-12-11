@@ -36,7 +36,7 @@ color <- colorFactor(palette = c("#1a9850", "#91cf60", "#d9ef8b", "#fee08b", "#f
 dbHeader <- dashboardHeader(title = "Buffer Maker for KML Files",
                             
                             tags$li(a(href = 'https://www.mccormickbiologicinc.com/',
-                                      img(src = 'Bren-logo-horizontal.png',
+                                      img(src = 'mbilogo.png',
                                           title = "Company Home", height = "30px"),
                                       style = "padding-top:10px; padding-bottom:10px;"),
                                     class = "dropdown"
@@ -63,7 +63,7 @@ ui <- dashboardPage(skin = ("green"),
                         menuItem("Instructions", tabName = "tab_7"),
                         menuItem("Buffer Maker", tabName = "tab_4"),
                         
-                        img(src='Bren-logo-circular.png', align = "center", height = 150)
+                        img(src='mbilogo.png', align = "center", height = 150)
                         
                       )
                       
@@ -83,7 +83,7 @@ ui <- dashboardPage(skin = ("green"),
                                   
                                   # These have to be in the www folder in the project 
                                   
-                                  box(img(src= 'Site_Visit.png', align = "left", height = 310), img(src= 'DinkeyActivities.png', height = 320), width = 12),
+                                  box(img(src= 'bnlllg.JPG', align = "left", height = 310), img(src= 'DinkeyActivities.png', height = 320), width = 12),
                                   box(p("Caption."), width = 12)
                                   
                                   
@@ -94,14 +94,31 @@ ui <- dashboardPage(skin = ("green"),
                         
                         tabItem(tabName = "tab_4",
                                 fluidRow(
-                                  box(withSpinner(leafletOutput("my_graph4", height = 700, width = 700))),
+                                  box(fileInput("map file (.kmz)", "Choose KMZ File",
+                                                multiple = FALSE,
+                                                accept = c("application/vnd.google-earth.kml+xml")),
+                                      
+                                      tags$hr(),
+                                      radioButtons("type", "Type",
+                                                   choices = c(KMZ = ".kmz",
+                                                               KML = ".kml"),
+                                                   selected = ".kmz"),
+                                      tags$hr(),
+                                      numericInput("Buffer Distance", "Input Buffer Distance", value = 0),
+                                      radioButtons("dist", "Measurement Type",
+                                                   choices = c(Meters = "meters",
+                                                               Feet = "feet"),
+                                                   selected = "feet")),
                                   
                                   
                                   
-                                  box(p("This figure shows the dominant vegetation classes across the Dinkey Landscape, with private lands overlaying the map. Vegetation type can significantly impact fire behavior. Trees that grow to have larger trunk areas grow thicker bark, which allows them to endure naturally occuring, low severity fires. Shorter trees and shrubs, which have thinner bark and low-hanging foliage, are more susceptible to fire damage and can result in more severe fires.", width = 12))
+                                  box(leafletOutput("my_map1", height = 432), 
+                                      p("This This is your map.", width = 12),
+                                      downloadButton("downloadData", "Download Your KML"))
                                   ))
                         )
-                                  ),
+))        
+                    
                         
 server <- function(input, output){
   
@@ -127,15 +144,6 @@ server <- function(input, output){
       theme(legend.position = "none") +
       theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +
       labs(title = "Change in Fire Severity Across the Landscape", x = "Conditional Flame Length Change (ft)", y = "Count") 
-    
-    # draw the histogram with the specified number of bins
-    #    if(input$addmean) {
-    #       
-    #       abline(v = mean(x),
-    #              lwd = 2,
-    #              lty = 2)
-    #       
-    #    }
     
   })
   
