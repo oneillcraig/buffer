@@ -94,7 +94,7 @@ ui <- dashboardPage(skin = ("green"),
                         
                         tabItem(tabName = "tab_4",
                                 fluidRow(
-                                  box(fileInput("map file (.kmz)", "Choose KMZ File",
+                                  box(fileInput("mapfile", "Choose KMZ File",
                                                 multiple = FALSE,
                                                 accept = c("application/vnd.google-earth.kml+xml")),
                                       
@@ -121,6 +121,21 @@ ui <- dashboardPage(skin = ("green"),
                     
                         
 server <- function(input, output){
+  
+  data <- reactive ({
+    x <- input$mapfile
+  })
+  
+  output$my_map1 <- renderLeaflet({
+    
+    df <- data()
+    
+    ogmap <- leaflet(df) %>% 
+      addTiles()
+    
+    ogmap
+    
+  })
   
   
   output$my_graph1 <- renderPlot({

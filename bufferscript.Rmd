@@ -45,6 +45,8 @@ buff <- st_buffer(map, dist=0.00068677)
 plot(buff$geometry, border='red', col=FALSE, reset=FALSE)
 plot(map$geometry, add=TRUE)
 
+buffered <- mapview(buff)
+mapview(map) + mapview(buff)
 ```
 
 ##Saving the buffer
