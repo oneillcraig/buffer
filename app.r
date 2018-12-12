@@ -123,9 +123,10 @@ ui <- dashboardPage(skin = ("green"),
 server <- function(input, output){
   
   output$my_map1 <- renderLeaflet({
+    inFile <- input$mapfile
+    map <- st_read(inFile$datapath)
     
-    req(input$mapfile)
-    
+      
     ogmap <- mapview(map)
     
     ogmap
