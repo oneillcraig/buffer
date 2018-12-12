@@ -122,16 +122,11 @@ ui <- dashboardPage(skin = ("green"),
                         
 server <- function(input, output){
   
-  data <- reactive ({
-    x <- input$mapfile
-  })
-  
   output$my_map1 <- renderLeaflet({
     
-    df <- data()
+    req(input$mapfile)
     
-    ogmap <- leaflet(df) %>% 
-      addTiles()
+    ogmap <- mapview(map)
     
     ogmap
     

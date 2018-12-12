@@ -47,6 +47,7 @@ plot(map$geometry, add=TRUE)
 
 buffered <- mapview(buff)
 mapview(map) + mapview(buff)
+
 ```
 
 ##Saving the buffer
