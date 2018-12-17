@@ -94,15 +94,15 @@ ui <- dashboardPage(skin = ("green"),
                         
                         tabItem(tabName = "tab_4",
                                 fluidRow(
-                                  box(fileInput("mapfile", "Choose KMZ File",
+                                  box(fileInput("mapfile", "Choose Map File (.kml for now only)",
                                                 multiple = FALSE,
                                                 accept = c("application/vnd.google-earth.kml+xml")),
                                       
                                       tags$hr(),
-                                      radioButtons("type", "Type",
-                                                   choices = c(KMZ = ".kmz",
-                                                               KML = ".kml"),
-                                                   selected = ".kmz"),
+                                      #radioButtons("type", "Type",
+                                      #             choices = c(KMZ = ".kmz",
+                                      #                         KML = ".kml"),
+                                      #             selected = ".kmz"),
                                       tags$hr(),
                                       numericInput("Buffer Distance", "Input Buffer Distance", value = 0),
                                       radioButtons("dist", "Measurement Type",
@@ -121,16 +121,24 @@ ui <- dashboardPage(skin = ("green"),
                     
                         
 server <- function(input, output){
-  
+
   output$my_map1 <- renderLeaflet({
-    inFile <- input$mapfile
-    map <- st_read(inFile$datapath)
     
-      
-    ogmap <- mapview(map)
+    #input$mapfile is Null initially, this allows it to not display until the user uploads his file.
+    req(input$mapfile)
     
-    ogmap
+    tryCatch(
+      {
+        inFile <- st_read(input$mapfile)
+       },
+      error = function(e) {
+        stop(safeError(e))
+      }
+   )
     
+    
+    map <- mapview(inFile)
+    map@map
   })
   
   
