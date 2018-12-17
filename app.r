@@ -104,7 +104,7 @@ ui <- dashboardPage(skin = ("green"),
                                       #                         KML = ".kml"),
                                       #             selected = ".kmz"),
                                       tags$hr(),
-                                      numericInput("Buffer Distance", "Input Buffer Distance", value = 0),
+                                      numericInput("Distance", "Input Buffer Distance", value = 0),
                                       radioButtons("dist", "Measurement Type",
                                                    choices = c(Meters = "meters",
                                                                Feet = "feet"),
@@ -136,11 +136,21 @@ server <- function(input, output){
       }
    )
     
+    buff <- st_buffer(inFile, dist=input$Distance)
+    buff <- st_union(buff)
+    umap <- st_union(inFile)
+    buff2 <- st_difference(buff, umap)
+    OriginalMap <- inFile
+    BufferMap <- buff2
     
-    map <- mapview(inFile)
+    
+    #buff <- st_buffer(inFile, dist=input$Distance)
+    map <- mapview(OriginalMap) + mapview(BufferMap)
     map@map
   })
   
+  
+
   
   output$my_graph1 <- renderPlot({
     # generate bins based on input$bins from ui.R

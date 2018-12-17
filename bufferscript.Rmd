@@ -43,11 +43,21 @@ The buffer distances required are listed in feet (usually) but our maps are WGS8
 ##Create the buffer
 ```{r}
 buff <- st_buffer(map, dist=0.00068677)
-plot(buff$geometry, border='red', col=FALSE, reset=FALSE)
-plot(map$geometry, add=TRUE)
+buff <- st_union(buff)
+diff <- st_difference(buff, map)
+#plot(buff$geometry, border='red', col=FALSE, reset=FALSE)
+#plot(map$geometry, add=TRUE)
 
 buffered <- mapview(buff)
-mapview(map) + mapview(buff)
+mapview(map) + mapview(diff) + mapview(buff)
+
+umap <- st_union(map)
+
+diff2 <- st_difference(buff, umap)
+
+mapview(diff2)+mapview(map)
+
+
 
 ```
 
