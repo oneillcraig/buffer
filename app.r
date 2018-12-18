@@ -21,7 +21,7 @@ library(tidyverse)
 library(rgdal)
 library(shinycssloaders)
 library(png)
-
+library(mapview)
 
 ### Buffer Maker Code
 
@@ -97,6 +97,7 @@ ui <- dashboardPage(skin = ("green"),
                                   box(fileInput("mapfile", "Choose Map File (.kml for now only)",
                                                 multiple = FALSE,
                                                 accept = c("application/vnd.google-earth.kml+xml")),
+                                      p("Upload your map file (kml only at the moment) and an initial buffer will be calculated for your map.  Change the buffer size based on project needs below."),
                                       
                                       tags$hr(),
                                       #radioButtons("type", "Type",
@@ -104,11 +105,13 @@ ui <- dashboardPage(skin = ("green"),
                                       #                         KML = ".kml"),
                                       #             selected = ".kmz"),
                                       tags$hr(),
-                                      numericInput("Distance", "Input Buffer Distance", value = 0),
+                                      numericInput("Distance", "Change Buffer Distance:", value = 0.00068677),
                                       radioButtons("dist", "Measurement Type",
-                                                   choices = c(Meters = "meters",
-                                                               Feet = "feet"),
-                                                   selected = "feet")),
+                                                   choices = c(ArcSeconds = "arc",
+                                                               Feet = "feet",
+                                                               Meters = "meter"),
+                                                   selected = "arc"),
+                                      submitButton("Load and Calculate")),
                                   
                                   
                                   
@@ -149,7 +152,20 @@ server <- function(input, output){
     map@map
   })
   
+  createBuffer <- reactive({
+    MyBuffer <- BufferMap
+  })
   
+  output$downloadData <- downloadHandler(
+    filename = "buffermap.zip",
+    content = function(file){
+      data = st_write(createBuffer(),
+               dsn = file,
+               #dsn = choose.files(default="buffermap.kml",
+                #                  caption = "Select file to save as, or create new fils"),
+               delete_dsn=TRUE)
+    }
+  )
 
   
   output$my_graph1 <- renderPlot({
