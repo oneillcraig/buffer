@@ -20,7 +20,7 @@ library(sp)
 library(tidyverse)
 library(rgdal)
 library(shinycssloaders)
-library(png)
+#library(png)
 library(mapview)
 
 ### Buffer Maker Code

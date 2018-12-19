@@ -31,9 +31,10 @@ file.copy(location, "unzip.kml.zip", overwrite = TRUE)
 unzipped <- unzip("unzip.kml.zip")
 
 map <- st_read(unzipped)
+map <- st_read(location)
+
 
 mapview(map)
-
 
 ```
 
